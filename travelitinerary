@@ -1,0 +1,163 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Random;
+
+class Destination {
+    private String city;
+    private String country;
+    private String travelDate;
+    private int days;
+
+    // Constructor
+    public Destination(String city, String country, String travelDate, int days) {
+        this.city = city;
+        this.country = country;
+        this.travelDate = travelDate;
+        this.days = days;
+    }
+
+    // Getters
+    public String getCity() {
+        return city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getTravelDate() {
+        return travelDate;
+    }
+
+    public int getDays() {
+        return days;
+    }
+
+    @Override
+    public String toString() {
+        return city + ", " + country + " - " + days + " days (Travel date: " + travelDate + ")";
+    }
+}
+
+class ItineraryPlanner {
+    private ArrayList<Destination> destinations;
+    private double budgetPerDay;
+
+    // Constructor
+    public ItineraryPlanner() {
+        this.destinations = new ArrayList<>();
+    }
+
+    // Add a destination
+    public void addDestination(Destination destination) {
+        destinations.add(destination);
+    }
+
+    // Set the daily budget
+    public void setBudgetPerDay(double budgetPerDay) {
+        this.budgetPerDay = budgetPerDay;
+    }
+
+    // Simulate weather information
+    private String getRandomWeather() {
+        String[] weatherOptions = {"Sunny", "Rainy", "Cloudy", "Windy", "Stormy"};
+        Random random = new Random();
+        return weatherOptions[random.nextInt(weatherOptions.length)];
+    }
+
+    // Simulate distance between destinations (dummy logic)
+    private double calculateDistance(Destination d1, Destination d2) {
+        return 100 + (Math.random() * 900); // Simulate distances between 100km and 1000km
+    }
+
+    // Generate the itinerary
+    public void generateItinerary() {
+        if (destinations.isEmpty()) {
+            System.out.println("No destinations added yet.");
+            return;
+        }
+
+        System.out.println("\nYour Travel Itinerary:");
+        double totalBudget = 0;
+        Destination previousDestination = null;
+
+        for (Destination destination : destinations) {
+            System.out.println("\nDestination: " + destination.getCity() + ", " + destination.getCountry());
+            System.out.println("Travel Date: " + destination.getTravelDate());
+            System.out.println("Weather Forecast: " + getRandomWeather());
+            System.out.println("Number of Days: " + destination.getDays());
+            double destinationCost = destination.getDays() * budgetPerDay;
+            totalBudget += destinationCost;
+            System.out.println("Estimated Budget for this destination: $" + destinationCost);
+
+            if (previousDestination != null) {
+                double distance = calculateDistance(previousDestination, destination);
+                System.out.println("Distance from " + previousDestination.getCity() + " to " + destination.getCity() + ": " + distance + " km");
+            }
+
+            previousDestination = destination;
+        }
+
+        System.out.println("\nTotal Estimated Budget: $" + totalBudget);
+    }
+}
+
+public class TravelItineraryPlanner {
+    private static Scanner scanner = new Scanner(System.in);
+    private static ItineraryPlanner planner = new ItineraryPlanner();
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("\n--- Travel Itinerary Planner ---");
+            System.out.println("1. Add a Destination");
+            System.out.println("2. Set Budget per Day");
+            System.out.println("3. Generate Itinerary");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    addDestination();
+                    break;
+                case 2:
+                    setBudget();
+                    break;
+                case 3:
+                    planner.generateItinerary();
+                    break;
+                case 4:
+                    System.out.println("Exiting the planner. Have a great trip!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 4);
+    }
+
+    // Add destination functionality
+    private static void addDestination() {
+        System.out.print("Enter the city: ");
+        String city = scanner.nextLine();
+        System.out.print("Enter the country: ");
+        String country = scanner.nextLine();
+        System.out.print("Enter the travel date (e.g., 2024-10-15): ");
+        String travelDate = scanner.nextLine();
+        System.out.print("Enter the number of days to stay: ");
+        int days = scanner.nextInt();
+
+        Destination destination = new Destination(city, country, travelDate, days);
+        planner.addDestination(destination);
+        System.out.println("Destination added successfully!");
+    }
+
+    // Set budget per day functionality
+    private static void setBudget() {
+        System.out.print("Enter your budget per day (in USD): ");
+        double budgetPerDay = scanner.nextDouble();
+        planner.setBudgetPerDay(budgetPerDay);
+        System.out.println("Budget per day set to $" + budgetPerDay);
+    }
+}
